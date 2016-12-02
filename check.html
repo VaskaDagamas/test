@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="jquery-2.2.4.js"></script>
+</head>
+<body>
+<p class="answer" ></p>
+<script type="text/javascript">
+$.ajax("http://ftt.elsyton.com").then(function(task){
+	console.log("result", task); //смотрим, что получили
+	var links = [];//содаем массив
+	for (var i=0;i<task.trees.length;i++) {
+		var pairs = [];//создаем массив
+		dig_branch(task.trees[i], 0, pairs);//парсим дерево
+		links.push(pairs);//ложим в массив
+	}
+
+	console.log("links", links);  //проверяем, что получили
+	console.log("id", task.id); //проверяем, что получили
+
+
+	$.ajax({
+		url: "http://ftt.elsyton.com",//адрес
+		data: JSON.stringify({id: task.id, links: links}),//информация
+		dataType: "json",//формат
+		headers: {"Content-Type": "application/jsonp"},//заголовок
+		xhrFields: {
+		 	withCredentials: false
+		},
+		type: "POST"
+	}).then(function(check){
+		console.log("check", check); //смотрим, что получили
+		answer();
+		
+	})
+});
+
+function dig_branch(item, level, pairs) {//начинаем исследовать
+	const sub_keys = ["right", "left"];
+
+	for (var i=0;i<sub_keys.length;i++) {
+		var branch = item[sub_keys[i]];
+		if (branch && branch!==null) {
+			if (typeof pairs[level] === 'undefined')
+				pairs[level] = [];
+
+			pairs[level].push(branch.id);
+		}
+	}
+	
+	for (var i=0;i<sub_keys.length;i++) {
+		var branch = item[sub_keys[i]];
+		if (branch) {
+			dig_branch(branch, level+1, pairs);
+		}
+	}
+}
+var links = [];
+dig_branch(links, 0, links);
+
+
+
+
+function answer(){
+	for {
+
+	if  {
+		$(".answer").html("<span style='color:green'>ok</span");
+
+	}
+	else{
+		$(".answer").html("<span style='color:red'>error</span");
+	}
+};
+
+
+
+</script>
+<style type="text/css">
+	body{
+		background: #61b6e7;
+		position: relative;
+		width: 100%;
+		height: 100vh;
+		overflow: hidden;
+	}
+	.answer{
+		position: absolute;
+		top: 0px;
+		bottom: 0px;
+		left: 0px;
+		right: 0px;
+		font-size: 26pt;
+		margin: auto;
+		text-align: center;
+		width: 300px;
+		height: 26pt;
+	}
+	
+</style>
+
+</body>
+</html>
