@@ -9,6 +9,7 @@
 <script type="text/javascript">
 $.ajax("http://ftt.elsyton.com").then(function(task){
 	console.log("result", task); //смотрим, что получили
+	console.log("id", task.id); //проверяем, что получили
 	var links = [];//содаем массив
 	for (var i=0;i<task.trees.length;i++) {
 		var pairs = [];//создаем массив
@@ -16,9 +17,8 @@ $.ajax("http://ftt.elsyton.com").then(function(task){
 		links.push(pairs);//ложим в массив
 	}
 
-	console.log("links", links);  //проверяем, что получили
-	console.log("id", task.id); //проверяем, что получили
-
+	console.log("links", links);  //проверяем, что вышло
+	
 
 	$.ajax({
 		url: "http://ftt.elsyton.com",//адрес
@@ -31,13 +31,13 @@ $.ajax("http://ftt.elsyton.com").then(function(task){
 		type: "POST"
 	}).then(function(check){
 		console.log("check", check); //смотрим, что получили
-		answer();
+		answer();//проверяем ответ
 		
 	})
 });
 
 function dig_branch(item, level, pairs) {//начинаем исследовать
-	const sub_keys = ["right", "left"];
+	const sub_keys = ["right", "left"];  
 
 	for (var i=0;i<sub_keys.length;i++) {
 		var branch = item[sub_keys[i]];
@@ -59,21 +59,26 @@ function dig_branch(item, level, pairs) {//начинаем исследоват
 var links = [];
 dig_branch(links, 0, links);
 
-
-
+var check = {
+  name: "Вася",
+  age: 25,
+  roles: {
+    isAdmin: false,
+    isEditor: true
+  }
+};
+ch = JSON.stringify(check);
+answer();
 
 function answer(){
-	for {
-
-	if  {
-		$(".answer").html("<span style='color:green'>ok</span");
-
-	}
-	else{
-		$(".answer").html("<span style='color:red'>error</span");
-	}
+	ka = JSON.parse(ch,function(key,value){
+		$(".answer").html("<span class='animated bouce' style='color:green'>ok</span");
+		if (value == false) {
+			$(".answer").html("<span class='animated bouce'  style='color:red'>error</span");
+		}
+				
+	});
 };
-
 
 
 </script>
@@ -97,7 +102,75 @@ function answer(){
 		width: 300px;
 		height: 26pt;
 	}
+	.animated {
+	  -webkit-animation-duration: 1s;
+	  animation-duration: 1s;
+	  -webkit-animation-fill-mode: both;
+	  animation-fill-mode: both;
+	}
 	
+
+	.bounce {
+	  -webkit-animation-name: bounce;
+	  animation-name: bounce;
+	  -webkit-transform-origin: center bottom;
+	  transform-origin: center bottom;
+	}
+	@-webkit-keyframes bounce {
+	  from, 20%, 53%, 80%, to {
+	    -webkit-animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+	    animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+	    -webkit-transform: translate3d(0,0,0);
+	    transform: translate3d(0,0,0);
+	  }
+
+	  40%, 43% {
+	    -webkit-animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+	    animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+	    -webkit-transform: translate3d(0, -30px, 0);
+	    transform: translate3d(0, -30px, 0);
+	  }
+
+	  70% {
+	    -webkit-animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+	    animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+	    -webkit-transform: translate3d(0, -15px, 0);
+	    transform: translate3d(0, -15px, 0);
+	  }
+
+	  90% {
+	    -webkit-transform: translate3d(0,-4px,0);
+	    transform: translate3d(0,-4px,0);
+	  }
+	}
+
+	@keyframes bounce {
+	  from, 20%, 53%, 80%, to {
+	    -webkit-animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+	    animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+	    -webkit-transform: translate3d(0,0,0);
+	    transform: translate3d(0,0,0);
+	  }
+
+	  40%, 43% {
+	    -webkit-animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+	    animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+	    -webkit-transform: translate3d(0, -30px, 0);
+	    transform: translate3d(0, -30px, 0);
+	  }
+
+	  70% {
+	    -webkit-animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+	    animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+	    -webkit-transform: translate3d(0, -15px, 0);
+	    transform: translate3d(0, -15px, 0);
+	  }
+
+	  90% {
+	    -webkit-transform: translate3d(0,-4px,0);
+	    transform: translate3d(0,-4px,0);
+	  }
+	}
 </style>
 
 </body>
