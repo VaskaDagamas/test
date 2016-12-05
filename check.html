@@ -59,19 +59,10 @@ function dig_branch(item, level, pairs) {//начинаем исследоват
 var links = [];
 dig_branch(links, 0, links);
 
-var check = {
-  name: "Вася",
-  age: 25,
-  roles: {
-    isAdmin: false,
-    isEditor: true
-  }
-};
-ch = JSON.stringify(check);
-answer();
+
 
 function answer(){
-	ka = JSON.parse(ch,function(key,value){
+	ka = JSON.parse(check,function(key,value){
 		$(".answer").html("<span class='animated bouce' style='color:green'>ok</span");
 		if (value == false) {
 			$(".answer").html("<span class='animated bouce'  style='color:red'>error</span");
