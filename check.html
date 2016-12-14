@@ -5,18 +5,20 @@
 	<script type="text/javascript" src="jquery-2.2.4.js"></script>
 </head>
 <body>
-<p class="answer" ></p>
+<p class="answer"></p>
 <script type="text/javascript">
+sample_test();
+
 $.ajax("http://ftt.elsyton.com").then(function(task){
-	console.log("result", task); //смотрим, что получили
+	console.log("task", task); //смотрим, что получили
 	console.log("id", task.id); //проверяем, что получили
 	var links = [];//содаем массив
 	for (var i=0;i<task.trees.length;i++) {
-		var pairs = [];//создаем массив
-		dig_branch(task.trees[i], 0, pairs);//парсим дерево
+		var pairs = parse_tree(task.trees[i]);//парсим дерево
 		links.push(pairs);//ложим в массив
 	}
 
+	//links[0][0] = [99,88]; // для генерации ошибки в результатах
 	console.log("links", links);  //проверяем, что вышло
 	
 
@@ -24,52 +26,90 @@ $.ajax("http://ftt.elsyton.com").then(function(task){
 		url: "http://ftt.elsyton.com",//адрес
 		data: JSON.stringify({id: task.id, links: links}),//информация
 		dataType: "json",//формат
-		headers: {"Content-Type": "application/jsonp"},//заголовок
-		xhrFields: {
-		 	withCredentials: false
-		},
+		headers: {"Content-Type": "application/json"},//заголовок
 		type: "POST"
 	}).then(function(check){
 		console.log("check", check); //смотрим, что получили
-		answer();//проверяем ответ
+		//проверяем ответ
 		
-	})
-});
-
-function dig_branch(item, level, pairs) {//начинаем исследовать
-	const sub_keys = ["right", "left"];  
-
-	for (var i=0;i<sub_keys.length;i++) {
-		var branch = item[sub_keys[i]];
-		if (branch && branch!==null) {
-			if (typeof pairs[level] === 'undefined')
-				pairs[level] = [];
-
-			pairs[level].push(branch.id);
-		}
-	}
-	
-	for (var i=0;i<sub_keys.length;i++) {
-		var branch = item[sub_keys[i]];
-		if (branch) {
-			dig_branch(branch, level+1, pairs);
-		}
-	}
-}
-var links = [];
-dig_branch(links, 0, links);
-
-
-
-function answer(){
-	ka = JSON.parse(check,function(key,value){
-		$(".answer").html("<span class='animated bouce' style='color:green'>ok</span");
-		if (value == false) {
+		if (check.results.indexOf(false)===-1) {
+			$(".answer").html("<span class='animated bouce' style='color:green'>ok</span");
+		} else {
 			$(".answer").html("<span class='animated bouce'  style='color:red'>error</span");
 		}
-				
+		
+		
 	});
-};
+});
+
+function parse_tree(tree) {
+	var wait = []; 
+	var result = [];
+	dig_branch(tree, 0);
+
+	function dig_branch(item, level) {//начинаем исследовать
+		if (!item || item===null)
+			return;
+
+		check_pair(item.right);
+		check_pair(item.left);
+		
+		
+		dig_branch(item.right, level+1);
+		dig_branch(item.left, level+1);
+
+
+		function check_pair(branch) {
+			if (branch && branch!==null) {
+				if (typeof wait[level] !== 'undefined') {
+					result.push([ wait[level], branch.id	]);
+				}
+				wait[level] = branch.id;
+			}
+		}
+	}
+
+	return result;
+}
+
+//console.log(check_pair);
+//var links = [];
+//dig_branch(links, 0, links);
+
+
+function sample_test() {
+	var test = {};
+	test.tree = {
+		id: 0,
+		left: {
+			id: 1,
+			left: {
+				id: 5
+			}
+		},
+		right: {
+			id: 2,
+			left: {
+				id: 3,
+				left: null,
+				right: null
+			},
+			right: {
+				id: 4
+			}
+		}
+	};
+	test.result = [[4, 3], [2, 1], [3, 5]];
+
+	var pairs = parse_tree(test.tree);
+
+	console.log("pairs", pairs);
+	console.log("pairsR", JSON.stringify(pairs));
+	console.log("pairsT", JSON.stringify(test.result));
+}
+
+
+
 
 
 </script>
